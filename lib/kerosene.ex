@@ -77,7 +77,7 @@ defmodule Kerosene do
   end
 
   defp total_count(query = %{group_bys: [_|_]}), do: total_row_count(query)
-  defp total_count(query = %{from: {_, nil}}), do: total_row_count(query)
+  defp total_count(query = %{from: %Ecto.Query.FromExpr{source: {_, nil}}}), do: total_row_count(query)
 
   defp total_count(query) do
     primary_key = get_primary_key(query)
@@ -94,7 +94,11 @@ defmodule Kerosene do
 
   def get_primary_key(query) do
     new_query = case is_map(query) do
-      true -> query.from |> elem(1)
+      true ->
+        case query.from do
+          %Ecto.Query.FromExpr{source: {_, from}} -> from
+          {source, _schema} -> source
+        end
       _ -> query
     end
 
