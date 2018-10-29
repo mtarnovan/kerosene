@@ -17,7 +17,7 @@ defmodule KeroseneTest do
 
   test "offset works correctly" do
     create_products()
-    {items, kerosene} = Product |> Repo.paginate(%{"page" => 2}, per_page: 5)
+    {items, _kerosene} = Product |> Repo.paginate(%{"page" => 2}, per_page: 5)
     items = items |> Enum.sort_by(&(&1.id)) |> Enum.map(&(&1.name))
 
     assert ["Product 6", "Product 7", "Product 8", "Product 9", "Product 10"] == items
